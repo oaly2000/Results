@@ -60,12 +60,6 @@ The actual response type is `T` when successful, and `ProblemDetails` when faile
 
 After add `ResultEndpointFilter`, we should configures openapi document generation.
 
-**NOTE**: The first requested openapi document after startup is wrong, it may be a bug.
-
 ```csharp
-builder.Services.AddOpenApi(options => 
-{
-    options.AddDocumentTransformer<ResultDocumentTransformer>()
-});
+builder.Services.AddOpenApi(options => options.AddOperationTransformer<ResultOperationTransformer>());
 ```
-

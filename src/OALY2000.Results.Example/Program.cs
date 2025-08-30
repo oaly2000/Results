@@ -6,16 +6,13 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi(options => options.AddDocumentTransformer<ResultDocumentTransformer>());
+builder.Services.AddOpenApi(options => options.AddOperationTransformer<ResultOperationTransformer>());
 
 builder.Services.AddExceptionHandler<KnownExceptionHandler>();
 builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -36,7 +33,7 @@ var api = app.MapGroup("/api").AddEndpointFilter<ResultEndpointFilter>();
 
 api.MapGet("/success", () =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
+    var forecast = Enumerable.Range(1, 5).Select(index =>
         new WeatherForecast
         (
             DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
@@ -49,7 +46,7 @@ api.MapGet("/success", () =>
 
 api.MapGet("/failure", () =>
 {
-    return Result<WeatherForecast[]>.Fail(new UnfiledException("Something went wrong"));
+    return Result<WeatherForecast>.Fail(new UnfiledException("Something went wrong"));
 });
 
 app.Run();
